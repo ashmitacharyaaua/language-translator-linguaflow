@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LinguaFlow — Speak Any Language, Instantly</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+  <div class="blob blob1"></div>
+  <div class="blob blob2"></div>
+  <div class="blob blob3"></div>
+
+  <nav class="navbar">
+    <a href="/" class="brand">🌐 LinguaFlow</a>
+    <div class="nav-links">
+      <a href="/">Translate</a>
+      <a href="/file-translate">File Translate</a>
+      <a href="https://github.com/ashmitacharyaaua" target="_blank">GitHub</a>
+      <button class="icon-btn" id="historyToggle" title="Translation history">🕐</button>
+      <button class="icon-btn" id="darkToggle" title="Toggle dark mode">🌓</button>
+    </div>
+  </nav>
+
+  <div class="hero">
+    <h1>Speak Any Language. Instantly.</h1>
+    <p>Type, talk, or upload — LinguaFlow translates it all, for free.</p>
+  </div>
+
+  <div class="stats-bar">🔥 You've translated <span id="statsCount">0</span> phrases this session</div>
+
+  <div class="page-wrap">
+    <div class="container">
+      <h2>Text Translator</h2>
+      <p class="subtitle">Fast, free, multilingual translation</p>
+
+      <form method="POST" id="translateForm">
+        <div class="text-box-wrap">
+          <textarea name="source_text" id="sourceText" placeholder="Type, or tap the mic to speak...">{{ source_text }}</textarea>
+          <button type="button" class="mic-btn" id="micBtn" title="Speak">🎤</button>
+        </div>
+        <div class="toolbar-row">
+          <button type="button" class="paste-btn" id="pasteBtn">📎 Paste from clipboard</button>
+          <div class="char-count"><span id="charCount">0</span> characters</div>
+        </div>
+
+        <div class="chips">
+          <div class="chip" data-phrase="Thank you very much">Thank you</div>
+          <div class="chip" data-phrase="Where is the nearest bathroom?">Where's the bathroom?</div>
+          <div class="chip" data-phrase="How much does this cost?">How much is this?</div>
+          <div class="chip" data-phrase="Nice to meet you">Nice to meet you</div>
+          <div class="chip" data-phrase="Can you help me, please?">Can you help me?</div>
+        </div>
+
+        <div class="lang-row">
+          <select name="source_lang" id="sourceLang">
+            {% for code, name in languages.items() %}
+              <option value="{{ code }}" {% if code == source_lang %}selected{% endif %}>{{ flags[code] }} {{ name }}</option>
+            {% endfor %}
+          </select>
+
+          <button type="button" class="swap-btn" id="swapBtn" title="Swap languages">⇄</button>
+
+          <select name="target_lang" id="targetLang">
+            {% for code, name in languages.items() %}
+              {% if code != 'auto' %}
+              <option value="{{ code }}" {% if code == target_lang %}selected{% endif %}>{{ flags[code] }} {{ name }}</option>
+              {% endif %}
+            {% endfor %}
+          </select>
+        </div>
+
+        <button type="submit">Translate</button>
+        <p class="hint">Tip: press Ctrl + Enter to translate · Ctrl + K to jump to a language</p>
+      </form>
+
+      {% if translated_text %}
+      <div class="result">
+        <div class="result-header">
+          <strong>Translation</strong>
+          <div class="result-actions">
+            <button type="button" id="speakBtn" title="Listen">🔊</button>
+            <button type="button" id="copyBtn" title="Copy">📋</button>
+          </div>
+        </div>
+        {% if source_lang == 'auto' and detected_lang_name %}<span class="detected-badge">Detected: {{ detected_lang_name }}</span>{% endif %}
+        <div class="result-text" id="resultText">{{ translated_text }}</div>
+      </div>
+      {% endif %}
+    </div>
+  </div>
+
+  <div class="toast" id="toast">Copied!</div>
+
+  <div class="cmdk-overlay" id="cmdkOverlay">
+    <div class="cmdk-box">
+      <input type="text" id="cmdkInput" placeholder="Type a language name...">
+      <div class="cmdk-list" id="cmdkList"></div>
+    </div>
+  </div>
+
+  <div class="history-panel" id="historyPanel">
+    <div class="history-header">
+      <strong>Recent Translations</strong>
+      <button class="icon-btn" id="closeHistory">✕</button>
+    </div>
+    <div class="history-list" id="historyList"></div>
+  </div>
+  <div class="history-overlay" id="historyOverlay"></div>
+
+  <script>
+    window.VOICE_TAGS = {{ voice_tags | tojson }};
+    window.CURRENT_TRANSLATION = {
+      source: {{ source_text | tojson }},
+      translated: {{ translated_text | tojson }},
+      sourceLang: {{ source_lang | tojson }},
+      targetLang: {{ target_lang | tojson }}
+    };
+  </script>
+  <script src="{{ url_for('static', filename='main.js') }}"></script>
+</body>
+</html>

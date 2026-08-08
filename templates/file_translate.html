@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LinguaFlow — File Translate</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+  <div class="blob blob1"></div>
+  <div class="blob blob2"></div>
+  <div class="blob blob3"></div>
+
+  <nav class="navbar">
+    <a href="/" class="brand">🌐 LinguaFlow</a>
+    <div class="nav-links">
+      <a href="/">Translate</a>
+      <a href="/file-translate">File Translate</a>
+      <a href="https://github.com/ashmitacharyaaua" target="_blank">GitHub</a>
+      <button class="icon-btn" id="darkToggle" title="Toggle dark mode">🌓</button>
+    </div>
+  </nav>
+
+  <div class="hero">
+    <h1>Translate Whole Documents.</h1>
+    <p>Upload a .txt file and get the full translation back, instantly.</p>
+  </div>
+
+  <div class="page-wrap">
+    <div class="container">
+      <h2>File Translator</h2>
+      <p class="subtitle">Upload a plain text (.txt) file to translate its contents</p>
+
+      <form method="POST" enctype="multipart/form-data" id="fileForm">
+        <label class="upload-zone" id="uploadZone">
+          📁 Click to choose a .txt file, or drag one here
+          <input type="file" name="file" id="fileInput" accept=".txt" required>
+        </label>
+        {% if filename %}<div class="filename-display">Selected: {{ filename }}</div>{% endif %}
+
+        <div class="lang-row" style="margin-top:18px;">
+          <select name="target_lang" style="flex:1;">
+            {% for code, name in languages.items() %}
+              {% if code != 'auto' %}
+              <option value="{{ code }}" {% if code == target_lang %}selected{% endif %}>{{ flags[code] }} {{ name }}</option>
+              {% endif %}
+            {% endfor %}
+          </select>
+        </div>
+
+        <button type="submit" class="primary-btn">Translate File</button>
+      </form>
+
+      {% if translated_text %}
+      <div class="result">
+        <div class="result-header">
+          <strong>Translated Content</strong>
+        </div>
+        <div class="result-text" id="resultText" style="white-space: pre-wrap; max-height: 300px; overflow-y: auto;">{{ translated_text }}</div>
+      </div>
+
+      <form method="POST" action="/download-translation" style="margin-top:14px;">
+        <input type="hidden" name="translated_text" value="{{ translated_text }}">
+        <button type="submit" class="primary-btn">⬇️ Download as .txt</button>
+      </form>
+      {% endif %}
+    </div>
+  </div>
+
+  <div class="toast" id="toast">Copied!</div>
+
+  <script>
+    const uploadZone = document.getElementById('uploadZone');
+    const fileInput = document.getElementById('fileInput');
+    fileInput.addEventListener('change', () => {
+      if (fileInput.files.length) {
+        uploadZone.textContent = '📄 ' + fileInput.files[0].name + ' — ready to translate';
+      }
+    });
+  </script>
+  <script src="{{ url_for('static', filename='main.js') }}"></script>
+</body>
+</html>
