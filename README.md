@@ -27,4 +27,32 @@ Built as part of an AI/ML project portfolio (Task 1: Language Translation Tool).
 
 ## 🚀 Running Locally
 
-1. Clone the repo:
+1. Clone the repo: git clone https://github.com/ashmitacharyaaua/language-translator-linguaflow.git
+cd language-translator-linguaflow
+
+2. Install dependencies: pip install flask deep-translator langdetect
+
+3.  Run the app: pythonapp.py
+
+4. Open `http://127.0.0.1:5000` in your browser.
+
+## 📁 Project Structure  
+ translator_project/
+├── app.py
+├── static/
+│ ├── style.css
+│ └── main.js
+└── templates/
+├── index.html
+└── file_translate.html
+
+## 🔮 Possible Future Additions
+
+- Support for more file types (.docx, .pdf)
+- User accounts with persistent history
+- Deployment to a live URL
+
+---
+
+Built by [Ashmit U Acharya](https://github.com/ashmitacharyaaua)
+      
